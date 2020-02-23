@@ -2,7 +2,7 @@ package com.mnk;
 
 import com.mnk.Enums.ShapeType;
 import com.mnk.Model.Shape;
-import com.mnk.Utils.ColorChooserButton;
+import com.mnk.Utils.Common;
 import com.mnk.Utils.SaveRestoreObjectFromFile;
 
 import javax.imageio.ImageIO;
@@ -21,13 +21,15 @@ import java.util.Stack;
 public class Main extends JFrame implements ActionListener {
 
     private JButton undoBtn,redoBtn,circleBtn,rectangleBtn,lineBtn,roundedRectangleBtn
-            ,clearAllBtn,colorChooserBtn,saveBtn,openBtn,exportBtn,newBtn;
+            ,clearAllBtn,colorChooserBtn,saveBtn,openBtn,exportBtn,newBtn,smallLineBtn,middleLineBtn,largeLineBtn;
     private JButton colorBtn1,colorBtn2,colorBtn3,colorBtn4,colorBtn5,colorBtn6;
     private List<JButton>shapeButtonsList=new ArrayList<>();
+    private List<JButton>lineButtonsList=new ArrayList<>();
+    private List<JButton>sampleColorsButtonList=new ArrayList<>();
 
-    private ColorChooserButton colorChooserButton;
+
     private DrawPanel drawPanel;
-    private Color[] sampleColors=new Color[]{Color.GREEN,Color.RED,Color.BLACK,Color.YELLOW,Color.BLUE,Color.MAGENTA};
+    private Color[] sampleColors=new Color[]{Color.BLACK,Color.RED,Color.GREEN,Color.YELLOW,Color.BLUE,Color.MAGENTA};
 
     public static void main(String[] args) {
 	// write your code here
@@ -46,12 +48,13 @@ public class Main extends JFrame implements ActionListener {
          */
         JPanel mainPanel=new JPanel(new BorderLayout());
 
+        //Center part
+        drawPanel=new DrawPanel();
         //North part
         JPanel operationsPanel= initOperationsView();
         //East part
         JPanel shapesColorsPanel=initShapesColorsPanel();
-        //Center part
-        drawPanel=new DrawPanel();
+
 
 
 
@@ -77,29 +80,72 @@ public class Main extends JFrame implements ActionListener {
         JPanel verticalPanel=new JPanel(gridBagLayout);
         GridBagConstraints gridBagConstraints=new GridBagConstraints();
         gridBagConstraints.fill=GridBagConstraints.VERTICAL;
-
-
         gridBagConstraints.insets=new Insets(3,3,3,3);
 
+        //Adding Shapes View
         JPanel shapesPanel=initShapesPanel();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         verticalPanel.add(shapesPanel,gridBagConstraints);
 
-
-
-        JPanel sampleColorsPanel=initColorsPanel();
+        //Adding LineStrokeView
+        JPanel lineStrokesPanel=initLineStrokesPanel();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        verticalPanel.add(sampleColorsPanel,gridBagConstraints);
+        verticalPanel.add(lineStrokesPanel,gridBagConstraints);
 
+        //Adding sample colors View
+        JPanel sampleColorsPanel=initColorsPanel();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        verticalPanel.add(sampleColorsPanel,gridBagConstraints);
+
+        //Adding Color Picker
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
         verticalPanel.add(colorChooserBtn,gridBagConstraints);
 
         shapesColorsPanel.add(verticalPanel);
         return shapesColorsPanel;
 
+
+    }
+
+    private JPanel initLineStrokesPanel() {
+        JPanel lineStrokesPanel=new JPanel(new GridLayout(3,1,5,5));
+        lineStrokesPanel.setBackground(Color.WHITE);
+        lineStrokesPanel.setPreferredSize(new Dimension(90,90));
+        //lineStrokesPanel.setBorder(new LineBorder(Color.GRAY,2));
+        initLineButtons();
+        lineStrokesPanel.add(smallLineBtn);
+        lineStrokesPanel.add(middleLineBtn);
+        lineStrokesPanel.add(largeLineBtn);
+        lineBtnClicked(smallLineBtn,Common.SMALL_LINE_STROKE_WIDTH);
+        return lineStrokesPanel;
+    }
+
+    private void initLineButtons() {
+        smallLineBtn=new JButton();
+        ImageIcon smallLineIcon= Common.createLineIcon(Color.BLACK,50,3);
+        smallLineBtn.setIcon(smallLineIcon);
+        smallLineBtn.setBackground(null);
+        smallLineBtn.addActionListener(this);
+
+        middleLineBtn=new JButton();
+        ImageIcon middleLineIcon= Common.createLineIcon(Color.BLACK,60,5);
+        middleLineBtn.setIcon(middleLineIcon);
+        middleLineBtn.setBackground(null);
+        middleLineBtn.addActionListener(this);
+
+        largeLineBtn=new JButton();
+        ImageIcon largeLineIcon= Common.createLineIcon(Color.BLACK,70,10);
+        largeLineBtn.setBackground(null);
+        largeLineBtn.setIcon(largeLineIcon);
+        largeLineBtn.addActionListener(this);
+
+        lineButtonsList.add(smallLineBtn);
+        lineButtonsList.add(middleLineBtn);
+        lineButtonsList.add(largeLineBtn);
 
     }
 
@@ -119,11 +165,11 @@ public class Main extends JFrame implements ActionListener {
     private JPanel initShapesPanel() {
         JPanel shapesPanel=new JPanel(new GridLayout(2,2,5,5));
         initShapeButtons();
-
         shapesPanel.add(lineBtn);
         shapesPanel.add(circleBtn);
         shapesPanel.add(rectangleBtn);
         shapesPanel.add(roundedRectangleBtn);
+        shapeBtnClicked(lineBtn,ShapeType.LINE);
         return shapesPanel;
     }
 
@@ -219,6 +265,12 @@ public class Main extends JFrame implements ActionListener {
 
     private void initColorsBtn() {
 
+        colorChooserBtn=new JButton();
+        colorChooserBtn.setBackground(Color.BLACK);
+        colorChooserBtn.setBorder(new LineBorder(Color.BLACK,5));
+        colorChooserBtn.setPreferredSize(new Dimension(35,35));
+        colorChooserBtn.addActionListener(this);
+
         colorBtn1=new JButton();
         colorBtn1.setBackground(sampleColors[0]);
         colorBtn1.setPreferredSize(new Dimension(25,25));
@@ -249,11 +301,25 @@ public class Main extends JFrame implements ActionListener {
         colorBtn6.setPreferredSize(new Dimension(25,25));
         colorBtn6.addActionListener(this);
 
-        colorChooserBtn=new JButton();
-        colorChooserBtn.setBackground(Color.BLACK);
-        colorChooserBtn.setBorder(new LineBorder(Color.BLACK,5));
-        colorChooserBtn.setPreferredSize(new Dimension(35,35));
-        colorChooserBtn.addActionListener(this);
+        sampleColorsButtonList.add(colorBtn1);
+        sampleColorsButtonList.add(colorBtn2);
+        sampleColorsButtonList.add(colorBtn3);
+        sampleColorsButtonList.add(colorBtn4);
+        sampleColorsButtonList.add(colorBtn5);
+        sampleColorsButtonList.add(colorBtn6);
+
+
+    }
+
+    private void sampleColorButtonClicked(JButton clickedBtn, Color color) {
+        drawPanel.setCurrentColor(color);
+        colorChooserBtn.setBackground(color);
+        for (JButton button: sampleColorsButtonList) {
+            if (clickedBtn==button)
+                button.setBorder(new LineBorder(Color.RED, 2));
+            else
+                button.setBorder(null);
+        }
     }
 
     private ImageIcon createIcon(String filePath){
@@ -279,12 +345,7 @@ public class Main extends JFrame implements ActionListener {
             shapeBtnClicked(roundedRectangleBtn, ShapeType.ROUNDEDRECTANGLE);
         else if (e.getSource()==clearAllBtn)
             drawPanel.clearAll();
-        else if (e.getSource()==colorChooserBtn){
-            System.out.println("Called ");
-            Color selectedColor=JColorChooser.showDialog(null, "Choose a color", colorChooserBtn.getBackground());
-            colorChooserBtn.setBackground(selectedColor);
-            drawPanel.setCurrentColor(selectedColor);
-        }
+
 
         else if (e.getSource()==newBtn)
             newPaint();
@@ -298,28 +359,53 @@ public class Main extends JFrame implements ActionListener {
 
         //SampleColors
         else if (e.getSource()==colorBtn1)
-            changeColor(0);
+            sampleColorButtonClicked(colorBtn1,sampleColors[0]);
         else if (e.getSource()==colorBtn2)
-            changeColor(1);
+            sampleColorButtonClicked(colorBtn2,sampleColors[1]);
         else if (e.getSource()==colorBtn3)
-            changeColor(2);
+            sampleColorButtonClicked(colorBtn3,sampleColors[2]);
         else if (e.getSource()==colorBtn4)
-            changeColor(3);
+            sampleColorButtonClicked(colorBtn4,sampleColors[3]);
         else if (e.getSource()==colorBtn5)
-            changeColor(4);
+            sampleColorButtonClicked(colorBtn5,sampleColors[4]);
         else if (e.getSource()==colorBtn6)
-            changeColor(5);
+            sampleColorButtonClicked(colorBtn6,sampleColors[5]);
+
+        else if (e.getSource()==colorChooserBtn){
+            Color selectedColor=JColorChooser.showDialog(null, "Choose a color", colorChooserBtn.getBackground());
+            sampleColorButtonClicked(colorChooserBtn,selectedColor);
+        }
+
+
+        //Line Stroke Buttons
+        else if(e.getSource()==smallLineBtn)
+            lineBtnClicked(smallLineBtn,Common.SMALL_LINE_STROKE_WIDTH);
+        else if(e.getSource()==middleLineBtn)
+            lineBtnClicked(middleLineBtn,Common.MIDDLE_LINE_STROKE_WIDTH);
+        else if(e.getSource()==largeLineBtn)
+            lineBtnClicked(largeLineBtn,Common.LARGE_LINE_STROKE_WIDTH);
 
 
 
 
     }
 
+    private void lineBtnClicked(JButton clickedBtn, int strokeWidth) {
+        drawPanel.setCurrentStrokeWidth(strokeWidth);
+
+        for (JButton button: lineButtonsList) {
+            if (clickedBtn==button)
+                button.setBorder(new LineBorder(Color.RED, 2));
+            else
+                button.setBorder(null);
+        }
+    }
+
     private void shapeBtnClicked(JButton selectedBtn, ShapeType shapeType) {
         drawPanel.setShapeType(shapeType);
         for (JButton button: shapeButtonsList) {
             if (selectedBtn==button)
-                button.setBorder(new LineBorder(Color.RED, 3));
+                button.setBorder(new LineBorder(Color.RED, 2));
             else
                 button.setBorder(null);
         }
@@ -331,10 +417,7 @@ public class Main extends JFrame implements ActionListener {
         main.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private void changeColor(int index){
-        drawPanel.setCurrentColor(sampleColors[index]);
-        colorChooserBtn.setBackground(sampleColors[index]);
-    }
+
 
     private void saveImage() {
         JFileChooser fileChooser=new JFileChooser();

@@ -4,6 +4,7 @@ import com.mnk.Enums.ShapeType;
 import com.mnk.Model.*;
 import com.mnk.Model.Rectangle;
 import com.mnk.Model.Shape;
+import com.mnk.Utils.Common;
 
 import javax.swing.*;
 
@@ -29,7 +30,7 @@ public class DrawPanel extends JPanel {
         currentShapes=new Stack<>();
         removedShapes=new Stack<>();
         shapeType=ShapeType.LINE;
-        currentStrokeWidth=5;
+        currentStrokeWidth= Common.SMALL_LINE_STROKE_WIDTH;
         initMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
@@ -57,6 +58,14 @@ public class DrawPanel extends JPanel {
 
     public void setMouseAdapter(MouseAdapter mouseAdapter) {
         this.mouseAdapter = mouseAdapter;
+    }
+
+    public int getCurrentStrokeWidth() {
+        return currentStrokeWidth;
+    }
+
+    public void setCurrentStrokeWidth(int currentStrokeWidth) {
+        this.currentStrokeWidth = currentStrokeWidth;
     }
 
     public Stack<Shape> getCurrentShapes() {
