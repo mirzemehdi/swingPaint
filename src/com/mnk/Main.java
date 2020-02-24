@@ -266,38 +266,37 @@ public class Main extends JFrame implements ActionListener {
     private void initColorsBtn() {
 
         colorChooserBtn=new JButton();
-        colorChooserBtn.setBackground(Color.BLACK);
+        colorChooserBtn.setIcon(Common.createLineIcon(Color.BLACK,35,35 ));
         colorChooserBtn.setBorder(new LineBorder(Color.BLACK,5));
         colorChooserBtn.setPreferredSize(new Dimension(35,35));
         colorChooserBtn.addActionListener(this);
 
-        colorBtn1=new JButton();
-        colorBtn1.setBackground(sampleColors[0]);
+        colorBtn1=new JButton(Common.createLineIcon(sampleColors[0], 25, 25));
         colorBtn1.setPreferredSize(new Dimension(25,25));
         colorBtn1.addActionListener(this);
 
         colorBtn2=new JButton();
-        colorBtn2.setBackground(sampleColors[1]);
+        colorBtn2.setIcon(Common.createLineIcon(sampleColors[1], 25, 25));
         colorBtn2.setPreferredSize(new Dimension(25,25));
         colorBtn2.addActionListener(this);
 
         colorBtn3=new JButton();
-        colorBtn3.setBackground(sampleColors[2]);
+        colorBtn3.setIcon(Common.createLineIcon(sampleColors[2], 25, 25));
         colorBtn3.setPreferredSize(new Dimension(25,25));
         colorBtn3.addActionListener(this);
 
         colorBtn4=new JButton();
-        colorBtn4.setBackground(sampleColors[3]);
+        colorBtn4.setIcon(Common.createLineIcon(sampleColors[3], 25, 25));
         colorBtn4.setPreferredSize(new Dimension(25,25));
         colorBtn4.addActionListener(this);
 
         colorBtn5=new JButton();
-        colorBtn5.setBackground(sampleColors[4]);
+        colorBtn5.setIcon(Common.createLineIcon(sampleColors[4], 25, 25));
         colorBtn5.setPreferredSize(new Dimension(25,25));
         colorBtn5.addActionListener(this);
 
         colorBtn6=new JButton();
-        colorBtn6.setBackground(sampleColors[5]);
+        colorBtn6.setIcon(Common.createLineIcon(sampleColors[5], 25, 25));
         colorBtn6.setPreferredSize(new Dimension(25,25));
         colorBtn6.addActionListener(this);
 
@@ -313,7 +312,7 @@ public class Main extends JFrame implements ActionListener {
 
     private void sampleColorButtonClicked(JButton clickedBtn, Color color) {
         drawPanel.setCurrentColor(color);
-        colorChooserBtn.setBackground(color);
+        colorChooserBtn.setIcon(Common.createLineIcon(color, 35,35));
         for (JButton button: sampleColorsButtonList) {
             if (clickedBtn==button)
                 button.setBorder(new LineBorder(Color.RED, 2));
