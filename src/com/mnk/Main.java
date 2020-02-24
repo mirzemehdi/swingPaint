@@ -4,6 +4,7 @@ import com.mnk.Enums.ShapeType;
 import com.mnk.Model.Shape;
 import com.mnk.Utils.Common;
 import com.mnk.Utils.SaveRestoreObjectFromFile;
+import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -419,9 +420,11 @@ public class Main extends JFrame implements ActionListener {
 
 
     private void saveImage() {
+
+
         JFileChooser fileChooser=new JFileChooser();
         fileChooser.setDialogTitle("Choose a directory to save your file: ");
-        int returnValue=fileChooser.showOpenDialog(null);
+        int returnValue=fileChooser.showSaveDialog(null);
         if (returnValue==JFileChooser.APPROVE_OPTION) {
             File file=fileChooser.getSelectedFile();
             SaveRestoreObjectFromFile.saveToFile(file.getPath()+".paint", drawPanel.getCurrentShapes());
@@ -432,7 +435,7 @@ public class Main extends JFrame implements ActionListener {
     private void exportImage(){
         JFileChooser fileChooser=new JFileChooser();
         fileChooser.setDialogTitle("Choose a directory to save your image: ");
-        int returnValue=fileChooser.showOpenDialog(null);
+        int returnValue=fileChooser.showSaveDialog(null);
         if (returnValue==JFileChooser.APPROVE_OPTION) {
             File file=fileChooser.getSelectedFile();
 
