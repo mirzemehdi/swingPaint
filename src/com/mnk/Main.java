@@ -4,7 +4,6 @@ import com.mnk.Enums.ShapeType;
 import com.mnk.Model.Shape;
 import com.mnk.Utils.Common;
 import com.mnk.Utils.SaveRestoreObjectFromFile;
-import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
