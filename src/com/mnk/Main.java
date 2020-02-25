@@ -1,6 +1,7 @@
 package com.mnk;
 
 import com.mnk.CustomListeners.AddedShapeListener;
+import com.mnk.CustomListeners.SelectFinishedListener;
 import com.mnk.Enums.ShapeType;
 import com.mnk.Model.Shape;
 import com.mnk.Utils.Common;
@@ -21,12 +22,13 @@ import java.util.Stack;
 
 public class Main extends JFrame implements ActionListener {
 
-    private JButton undoBtn,redoBtn,circleBtn,rectangleBtn,lineBtn,roundedRectangleBtn
+    private JButton selectBtn,moveBtn, undoBtn,redoBtn,circleBtn,rectangleBtn,lineBtn,roundedRectangleBtn
             ,clearAllBtn,colorChooserBtn,saveBtn,openBtn,exportBtn,newBtn,smallLineBtn,middleLineBtn,largeLineBtn;
     private JButton colorBtn1,colorBtn2,colorBtn3,colorBtn4,colorBtn5,colorBtn6;
     private List<JButton>shapeButtonsList=new ArrayList<>();
     private List<JButton>lineButtonsList=new ArrayList<>();
     private List<JButton>sampleColorsButtonList=new ArrayList<>();
+
 
 
     private DrawPanel drawPanel;
@@ -49,6 +51,7 @@ public class Main extends JFrame implements ActionListener {
 
         //Center part
         drawPanel=new DrawPanel();
+
         //North part
         JPanel operationsPanel= initOperationsView();
         //East part
@@ -58,6 +61,7 @@ public class Main extends JFrame implements ActionListener {
         drawPanel.setShapeListener(new AddedShapeListener() {
             @Override
             public void onAdded() {
+                redoBtn.setEnabled(false);
                 undoBtn.setEnabled(true);
             }
         });
@@ -169,8 +173,10 @@ public class Main extends JFrame implements ActionListener {
     }
 
     private JPanel initShapesPanel() {
-        JPanel shapesPanel=new JPanel(new GridLayout(2,2,5,5));
+        JPanel shapesPanel=new JPanel(new GridLayout(3,2,5,5));
         initShapeButtons();
+        shapesPanel.add(selectBtn);
+        shapesPanel.add(moveBtn);
         shapesPanel.add(lineBtn);
         shapesPanel.add(circleBtn);
         shapesPanel.add(rectangleBtn);
@@ -180,6 +186,24 @@ public class Main extends JFrame implements ActionListener {
     }
 
     private void initShapeButtons() {
+
+        moveBtn=new JButton("Move");
+//        moveBtn.setPreferredSize(new Dimension(40,40));
+        moveBtn.setBackground(Color.WHITE);
+        moveBtn.addActionListener(this);
+
+        selectBtn=new JButton("Select");
+//        selectBtn.setPreferredSize(new Dimension(40,40));
+        selectBtn.setBackground(Color.WHITE);
+        selectBtn.addActionListener(this);
+
+        drawPanel.setSelectFinishedListener(new SelectFinishedListener() {
+            @Override
+            public void onFinish() {
+                selectBtn.setBackground(Color.WHITE);
+            }
+        });
+
         circleBtn=new JButton(createIcon("icons/circle.png"));
         circleBtn.setPreferredSize(new Dimension(40,40));
         circleBtn.setBackground(Color.WHITE);
@@ -229,28 +253,28 @@ public class Main extends JFrame implements ActionListener {
 
 
         newBtn=new JButton("New", createIcon("icons/new.png"));
-        newBtn.setPreferredSize(new Dimension(80,30));
+        newBtn.setPreferredSize(new Dimension(100,30));
         newBtn.setBackground(Color.WHITE);
         newBtn.addActionListener(this);
 
         openBtn=new JButton("Open",createIcon("icons/open.png"));
-        openBtn.setPreferredSize(new Dimension(80,30));
+        openBtn.setPreferredSize(new Dimension(100,30));
         openBtn.setBackground(Color.WHITE);
         openBtn.addActionListener(this);
 
         saveBtn=new JButton("Save",createIcon("icons/save.png"));
-        saveBtn.setPreferredSize(new Dimension(80,30));
+        saveBtn.setPreferredSize(new Dimension(100,30));
         saveBtn.setBackground(Color.WHITE);
         saveBtn.addActionListener(this);
 
         clearAllBtn=new JButton("Clear",createIcon("icons/clear.png"));
-        clearAllBtn.setPreferredSize(new Dimension(80,30));
+        clearAllBtn.setPreferredSize(new Dimension(100,30));
         clearAllBtn.setBackground(Color.WHITE);
         clearAllBtn.addActionListener(this);
 
 
         exportBtn=new JButton("Export", createIcon("icons/export.png"));
-        exportBtn.setPreferredSize(new Dimension(80,30));
+        exportBtn.setPreferredSize(new Dimension(100,30));
         exportBtn.setBackground(Color.WHITE);
         exportBtn.addActionListener(this);
 
@@ -274,8 +298,7 @@ public class Main extends JFrame implements ActionListener {
     private void initColorsBtn() {
 
         colorChooserBtn=new JButton(createIcon("icons/colorwheel.png", 25, 25));
-//        colorChooserBtn.setIcon(Common.createLineIcon(Color.BLACK,35,35 ));
-//        colorChooserBtn.setBorder(new LineBorder(Color.BLACK,5));
+        colorChooserBtn.setBackground(Color.WHITE);
         colorChooserBtn.setPreferredSize(new Dimension(35,35));
         colorChooserBtn.addActionListener(this);
 
@@ -356,6 +379,10 @@ public class Main extends JFrame implements ActionListener {
             shapeBtnClicked(roundedRectangleBtn, ShapeType.ROUNDEDRECTANGLE);
         else if (e.getSource()==clearAllBtn)
             drawPanel.clearAll();
+        else if (e.getSource()==selectBtn) {
+
+            drawPanel.setSelected(true);
+        }
 
 
         else if (e.getSource()==newBtn)

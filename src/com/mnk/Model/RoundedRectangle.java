@@ -14,4 +14,13 @@ public class RoundedRectangle extends Shape {
         graphics.drawRoundRect(getStartX(),getStartY(),getWidth(),getHeight(),20,20);
 
     }
+
+    @Override
+    public boolean contains(int x, int y) {
+        if (getStartX()<x && getStartY()<y &&
+                getStartX()+getWidth()>x && getStartY()+getHeight()>y){
+            return true;
+        }
+        return false;
+    }
 }

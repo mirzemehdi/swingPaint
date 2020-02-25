@@ -15,4 +15,13 @@ public class Rectangle extends Shape {
     public void drawShape(Graphics graphics) {
         graphics.drawRect(getStartX(),getStartY(),getWidth(),getHeight());
     }
+
+    @Override
+    public boolean contains(int x, int y) {
+        if (getStartX()<x && getStartY()<y &&
+                getStartX()+getWidth()>x && getStartY()+getStartY()+getHeight()>y){
+            return true;
+        }
+        return false;
+    }
 }

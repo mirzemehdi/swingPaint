@@ -7,12 +7,14 @@ public abstract  class Shape implements Serializable  {
     private int x1,x2,y1,y2;
     private Color color;
     private int strokeWidth;
+    private boolean isSelected;
 
     public Shape(int x1, int y1,int strokeWidth, Color color) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2=x1;
         this.y2=y1;
+        isSelected=false;
         this.strokeWidth=strokeWidth;
         this.color = color;
     }
@@ -23,6 +25,14 @@ public abstract  class Shape implements Serializable  {
         this.y1 = y1;
         this.y2 = y2;
         this.color = color;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public int getX1() {
@@ -75,8 +85,12 @@ public abstract  class Shape implements Serializable  {
 
     public int getStartX(){return Math.min(getX1(),getX2());}
     public int getStartY(){return Math.min(getY1(),getY2());}
+    public int getEndX(){return Math.max(getX1(),getX2());}
+    public int getEndY(){return Math.max(getY1(),getY2());}
     public int getWidth(){return Math.abs(getX1()-getX2());}
     public int getHeight(){return Math.abs(getY1()-getY2());}
+
+
 
     public void draw(Graphics graphics){
         Graphics2D graphics2D=(Graphics2D)graphics;
@@ -86,4 +100,15 @@ public abstract  class Shape implements Serializable  {
     }
 
     public abstract void drawShape(Graphics graphics);
+    public  boolean isEdge(int x,int y){
+        if (    x==getStartX() && (y>getStartY() &&y<getEndY())
+                || x==getEndX() && (y>getStartY() &&y<getEndY())
+                || y==getStartY() && (x>getStartX() &&x<getEndX())
+                || y==getEndY() && (x>getStartX() &&y<getEndX())
+            ){
+            return true;
+        }
+        return false;
+    }
+    public abstract boolean contains(int x, int y);
 }
