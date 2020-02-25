@@ -380,8 +380,37 @@ public class Main extends JFrame implements ActionListener {
         else if (e.getSource()==clearAllBtn)
             drawPanel.clearAll();
         else if (e.getSource()==selectBtn) {
+            drawPanel.setMoved(false);
 
-            drawPanel.setSelected(true);
+            if (!drawPanel.isSelected()) {
+                drawPanel.setSelected(true);
+                selectBtn.setBackground(Color.CYAN);
+                moveBtn.setBackground(Color.WHITE);
+            }
+            else {
+                drawPanel.setSelected(false);
+                drawPanel.setSelectedShape(null);
+                repaint();
+                selectBtn.setBackground(Color.WHITE);
+            }
+
+
+        }
+
+        else if(e.getSource()==moveBtn){
+            drawPanel.setSelected(false);
+            if (drawPanel.isMoved()){
+                drawPanel.setMoved(false);
+                drawPanel.setSelectedShape(null);
+                repaint();
+                moveBtn .setBackground(Color.WHITE);
+            }
+            else {
+                drawPanel.setMoved(true);
+                moveBtn.setBackground(Color.CYAN);
+                selectBtn.setBackground(Color.WHITE);
+            }
+
         }
 
 

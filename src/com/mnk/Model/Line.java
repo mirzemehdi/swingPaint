@@ -22,8 +22,11 @@ public class Line extends Shape {
 
     @Override
     public boolean contains(int x, int y) {
-        if (getStartX()<x && getStartY()<y &&
-                getEndX()>x && getStartY()+getEndY()>y){
+        System.out.println("x: "+x+ " y: "+y);
+        System.out.println("getStartX: "+getStartX()+ " getEndX: "+getEndX()
+        +                   "getStartY: "+getStartY()+ " getEndY: "+getEndY());
+
+        if (getStartX()<=x && getEndX()>=x && getStartY()-5<=y&& getEndY()+5>=y ){
             return true;
         }
         return false;

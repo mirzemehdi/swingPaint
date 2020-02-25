@@ -111,4 +111,25 @@ public abstract  class Shape implements Serializable  {
         return false;
     }
     public abstract boolean contains(int x, int y);
+
+    public void addSelectedBorder(Graphics g,Shape selectedShape) {
+        Graphics2D graphics2D=(Graphics2D)g;
+        graphics2D.setColor(Color.BLUE);
+        graphics2D.setStroke(new BasicStroke(getStrokeWidth()));
+        graphics2D.drawRect(selectedShape.getStartX(),selectedShape.getStartY(),getWidth(),getHeight());
+    }
+
+
+    public void setCenterX(int x) {
+        int coef=(x1<x2)? 1: -1;
+        int width=getWidth();
+        x1=x-coef*width/2;
+        x2=x+coef*width/2;
+    }
+    public void setCenterY(int y) {
+        int coef=(y1<y2)? 1: -1;
+        int height=getHeight();
+        y1=y-coef*height/2;
+        y2=y+coef*height/2;
+    }
 }

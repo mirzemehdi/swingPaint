@@ -22,7 +22,7 @@ public class Oval extends Shape {
     @Override
     public boolean contains(int x, int y) {
         if (getStartX()<x && getStartY()<y &&
-                getStartX()+getWidth()>x && getStartY()+getStartY()+getHeight()>y){
+                getStartX()+getWidth()>x && getStartY()+getHeight()>y){
             return true;
         }
         return false;

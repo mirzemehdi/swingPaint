@@ -13,8 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.Stack;
 
 public class DrawPanel extends JPanel {
@@ -26,8 +24,10 @@ public class DrawPanel extends JPanel {
     private Stack<Shape>currentShapes;
     private Stack<Shape>removedShapes;
     private boolean isSelected=false;
+    private boolean isMoved=false;
     private AddedShapeListener shapeListener;
     private SelectFinishedListener selectFinishedListener;
+    private Shape selectedShape=null;
 
     public DrawPanel() {
         setBackground(Color.WHITE);
@@ -51,10 +51,20 @@ public class DrawPanel extends JPanel {
 
         if (currentShape!=null)
             currentShape.draw(g);
+        if (selectedShape!=null)
+            selectedShape.addSelectedBorder(g,selectedShape);
     }
 
     public MouseAdapter getMouseAdapter() {
         return mouseAdapter;
+    }
+
+    public boolean isMoved() {
+        return isMoved;
+    }
+
+    public void setMoved(boolean moved) {
+        isMoved = moved;
     }
 
     public void setCurrentColor(Color currentColor) {
@@ -132,6 +142,7 @@ public class DrawPanel extends JPanel {
         }
     }
 
+
     public void clearAll(){
         removedShapes.clear();
         currentShapes.clear();
@@ -146,9 +157,8 @@ public class DrawPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                if (isSelected){
-                    System.out.println("Item is selected");
-                    moveShape(e);
+                if (isSelected||isMoved){
+                    selectShape(e);
                 }
                else if (shapeType!=null) {
                    shapeListener.onAdded();
@@ -180,6 +190,9 @@ public class DrawPanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
+
+
+
                 if (currentShape!=null) {
                     currentShape.setX2(e.getX());
                     currentShape.setY2(e.getY());
@@ -187,16 +200,32 @@ public class DrawPanel extends JPanel {
                     currentShape = null;
                     isSelected=false;
                     selectFinishedListener.onFinish();
+                    selectedShape=null;
                     removedShapes.clear();
                     repaint();
+
                 }
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
+
+                if(selectedShape!=null){
+                    if (isSelected) {
+                        selectedShape.setCenterX(e.getX());
+                        selectedShape.setCenterY(e.getY());
+                        repaint();
+                    }
+                    else if (isMoved){
+                        resizeShape(e);
+                        repaint();
+                    }
+                }
+
                 if (currentShape!=null) {
                     currentShape.setX2(e.getX());
+                    System.out.println("Called Current Shape");
                     currentShape.setY2(e.getY());
                     repaint();
                 }
@@ -206,12 +235,82 @@ public class DrawPanel extends JPanel {
         };
     }
 
-    private void moveShape(MouseEvent e) {
-        for (Shape shape: currentShapes){
-            if (shape.isEdge(e.getX(),e.getY())){
+    private void resizeShape(MouseEvent e) {
+        System.out.println("x: "+e.getX()+ " y: "+e.getY());
+        System.out.println("SelectX: "+selectedShape.getEndX()+" SelectY: "+selectedShape.getEndY());
+            if ( (e.getX()>=selectedShape.getEndX()-5&&e.getX()<=selectedShape.getEndX()+5)
+                    && (e.getY()<=selectedShape.getEndY()+5&& e.getY()>=selectedShape.getEndY()-5 )) {
+                System.out.println("Right Bottom Corner ");
 
-                currentShape=shape;
-                System.out.println("You can move shape");
+                if (selectedShape.getEndY()==selectedShape.getY1())
+                    selectedShape.setY1(e.getY());
+                else
+                    selectedShape.setY2(e.getY());
+                if (selectedShape.getEndX()==selectedShape.getX1())
+                    selectedShape.setX1(e.getX());
+                else
+                    selectedShape.setX2(e.getX());
+
+            }
+        else if ( (e.getX()>=selectedShape.getEndX()-5&&e.getX()<=selectedShape.getEndX()+5)
+                && (e.getY()<=selectedShape.getStartY()+5&& e.getY()>=selectedShape.getStartY()-5 )) {
+            System.out.println("Right Top Corner ");
+                if (selectedShape.getStartY()==selectedShape.getY1())
+                    selectedShape.setY1(e.getY());
+                else
+                    selectedShape.setY2(e.getY());
+                if (selectedShape.getEndX()==selectedShape.getX1())
+                    selectedShape.setX1(e.getX());
+                else
+                    selectedShape.setX2(e.getX());
+        }
+
+            else if ( (e.getX()>=selectedShape.getStartX()-5&&e.getX()<=selectedShape.getStartX()+5)
+                    && (e.getY()<=selectedShape.getEndY()+5&& e.getY()>=selectedShape.getEndY()-5 )) {
+                System.out.println("Left Bottom Corner ");
+                if (selectedShape.getEndY()==selectedShape.getY1())
+                    selectedShape.setY1(e.getY());
+                else
+                    selectedShape.setY2(e.getY());
+                if (selectedShape.getStartX()==selectedShape.getX1())
+                    selectedShape.setX1(e.getX());
+                else
+                    selectedShape.setX2(e.getX());
+            }
+//
+            else if ( (e.getX()>=selectedShape.getStartX()-5&&e.getX()<=selectedShape.getStartX()+5)
+                    && (e.getY()<=selectedShape.getStartY()+5&& e.getY()>=selectedShape.getStartY()-5 )) {
+                System.out.println("Left Top Corner ");
+                if (selectedShape.getStartY()==selectedShape.getY1())
+                    selectedShape.setY1(e.getY());
+                else
+                    selectedShape.setY2(e.getY());
+                if (selectedShape.getStartX()==selectedShape.getX1())
+                    selectedShape.setX1(e.getX());
+                else
+                    selectedShape.setX2(e.getX());
+            }
+
+
+    }
+
+    public Shape getSelectedShape() {
+        return selectedShape;
+    }
+
+    public void setSelectedShape(Shape selectedShape) {
+        this.selectedShape = selectedShape;
+    }
+
+    private void selectShape(MouseEvent e) {
+        for (Shape shape: currentShapes){
+            if (shape.contains(e.getX(),e.getY())){
+
+//                currentShape=shape;
+                selectedShape=shape;
+                repaint();
+
+
             }
 
         }
