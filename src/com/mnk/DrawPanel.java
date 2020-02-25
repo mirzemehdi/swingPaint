@@ -1,5 +1,6 @@
 package com.mnk;
 
+import com.mnk.CustomListeners.AddedShapeListener;
 import com.mnk.Enums.ShapeType;
 import com.mnk.Model.*;
 import com.mnk.Model.Rectangle;
@@ -23,6 +24,7 @@ public class DrawPanel extends JPanel {
     private ShapeType shapeType;
     private Stack<Shape>currentShapes;
     private Stack<Shape>removedShapes;
+    private AddedShapeListener shapeListener;
 
     public DrawPanel() {
         setBackground(Color.WHITE);
@@ -32,6 +34,7 @@ public class DrawPanel extends JPanel {
         shapeType=ShapeType.LINE;
         currentStrokeWidth= Common.SMALL_LINE_STROKE_WIDTH;
         initMouseAdapter();
+
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
     }
@@ -50,6 +53,14 @@ public class DrawPanel extends JPanel {
 
     public MouseAdapter getMouseAdapter() {
         return mouseAdapter;
+    }
+
+    public Stack<Shape> getRemovedShapes() {
+        return removedShapes;
+    }
+
+    public void setRemovedShapes(Stack<Shape> removedShapes) {
+        this.removedShapes = removedShapes;
     }
 
     public void setCurrentColor(Color currentColor) {
@@ -149,6 +160,7 @@ public class DrawPanel extends JPanel {
                     currentShape.setX2(e.getX());
                     currentShape.setY2(e.getY());
                     currentShapes.add(currentShape);
+                    shapeListener.onAdded();
                     currentShape = null;
                     removedShapes.clear();
                     repaint();
@@ -170,4 +182,7 @@ public class DrawPanel extends JPanel {
     }
 
 
+    public void setShapeListener(AddedShapeListener shapeListener) {
+        this.shapeListener = shapeListener;
+    }
 }

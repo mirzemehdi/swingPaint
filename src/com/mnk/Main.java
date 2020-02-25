@@ -1,5 +1,6 @@
 package com.mnk;
 
+import com.mnk.CustomListeners.AddedShapeListener;
 import com.mnk.Enums.ShapeType;
 import com.mnk.Model.Shape;
 import com.mnk.Utils.Common;
@@ -34,13 +35,11 @@ public class Main extends JFrame implements ActionListener {
     public static void main(String[] args) {
 	// write your code here
         Main main=new Main("New Paint");
-
-
-
     }
 
     public Main(String title) throws HeadlessException {
         super(title) ;
+
 
         /**
          * Main View is divided to three parts East,North and Center
@@ -55,6 +54,13 @@ public class Main extends JFrame implements ActionListener {
         //East part
         JPanel shapesColorsPanel=initShapesColorsPanel();
 
+
+        drawPanel.setShapeListener(new AddedShapeListener() {
+            @Override
+            public void onAdded() {
+                undoBtn.setEnabled(true);
+            }
+        });
 
 
 
@@ -222,28 +228,28 @@ public class Main extends JFrame implements ActionListener {
     private void initOperationButtons() {
 
 
-        newBtn=new JButton("New");
+        newBtn=new JButton("New", createIcon("icons/new.png"));
         newBtn.setPreferredSize(new Dimension(80,30));
         newBtn.setBackground(Color.WHITE);
         newBtn.addActionListener(this);
 
-        openBtn=new JButton("Open");
+        openBtn=new JButton("Open",createIcon("icons/open.png"));
         openBtn.setPreferredSize(new Dimension(80,30));
         openBtn.setBackground(Color.WHITE);
         openBtn.addActionListener(this);
 
         saveBtn=new JButton("Save",createIcon("icons/save.png"));
-        saveBtn.setPreferredSize(new Dimension(100,30));
+        saveBtn.setPreferredSize(new Dimension(80,30));
         saveBtn.setBackground(Color.WHITE);
         saveBtn.addActionListener(this);
 
-        clearAllBtn=new JButton("Clear");
+        clearAllBtn=new JButton("Clear",createIcon("icons/clear.png"));
         clearAllBtn.setPreferredSize(new Dimension(80,30));
         clearAllBtn.setBackground(Color.WHITE);
         clearAllBtn.addActionListener(this);
 
 
-        exportBtn=new JButton("Export");
+        exportBtn=new JButton("Export", createIcon("icons/export.png"));
         exportBtn.setPreferredSize(new Dimension(80,30));
         exportBtn.setBackground(Color.WHITE);
         exportBtn.addActionListener(this);
@@ -251,11 +257,13 @@ public class Main extends JFrame implements ActionListener {
         undoBtn=new JButton(createIcon("icons/undo.png"));
         undoBtn.setPreferredSize(new Dimension(60,30));
         undoBtn.setBackground(Color.WHITE);
+        undoBtn.setEnabled(false);
         undoBtn.addActionListener(this);
 
         redoBtn=new JButton(createIcon("icons/redo.png"));
         redoBtn.setPreferredSize(new Dimension(60,30));
         redoBtn.setBackground(Color.WHITE);
+        redoBtn.setEnabled(false);
         redoBtn.addActionListener(this);
 
 
@@ -265,9 +273,9 @@ public class Main extends JFrame implements ActionListener {
 
     private void initColorsBtn() {
 
-        colorChooserBtn=new JButton();
-        colorChooserBtn.setIcon(Common.createLineIcon(Color.BLACK,35,35 ));
-        colorChooserBtn.setBorder(new LineBorder(Color.BLACK,5));
+        colorChooserBtn=new JButton(createIcon("icons/colorwheel.png", 25, 25));
+//        colorChooserBtn.setIcon(Common.createLineIcon(Color.BLACK,35,35 ));
+//        colorChooserBtn.setBorder(new LineBorder(Color.BLACK,5));
         colorChooserBtn.setPreferredSize(new Dimension(35,35));
         colorChooserBtn.addActionListener(this);
 
@@ -323,17 +331,21 @@ public class Main extends JFrame implements ActionListener {
 
     private ImageIcon createIcon(String filePath){
         ImageIcon icon=new ImageIcon(filePath);
-        icon=new ImageIcon(icon.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH));
+        icon=new ImageIcon(icon.getImage().getScaledInstance(15,15,Image.SCALE_SMOOTH));
         return icon;
     }
-
+    private ImageIcon createIcon(String filePath, int width, int height){
+        ImageIcon icon=new ImageIcon(filePath);
+        icon=new ImageIcon(icon.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH));
+        return icon;
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource()==redoBtn)
-            drawPanel.addLastClearedShape();
+            redo();
         else if(e.getSource()==undoBtn)
-            drawPanel.clearLastShape();
+            undo();
         else if (e.getSource()==circleBtn)
             shapeBtnClicked(circleBtn,ShapeType.OVAL);
         else if (e.getSource()==lineBtn)
@@ -384,9 +396,23 @@ public class Main extends JFrame implements ActionListener {
         else if(e.getSource()==largeLineBtn)
             lineBtnClicked(largeLineBtn,Common.LARGE_LINE_STROKE_WIDTH);
 
+    }
 
+    private void undo() {
+        drawPanel.clearLastShape();
+        redoBtn.setEnabled(true);
+        if (drawPanel.getCurrentShapes().empty()){
+            undoBtn.setEnabled(false);
+        }
+    }
 
+    private void redo() {
+        drawPanel.addLastClearedShape();
+        undoBtn.setEnabled(true);
 
+        if (drawPanel.getRemovedShapes().empty()){
+            redoBtn.setEnabled(false);
+        }
     }
 
     private void lineBtnClicked(JButton clickedBtn, int strokeWidth) {
@@ -466,8 +492,6 @@ public class Main extends JFrame implements ActionListener {
                 System.out.println("Error while opening file");
             }
         }
-
-
 
     }
 }
