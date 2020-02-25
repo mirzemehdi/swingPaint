@@ -187,13 +187,13 @@ public class Main extends JFrame implements ActionListener {
 
     private void initShapeButtons() {
 
-        moveBtn=new JButton("Move");
-//        moveBtn.setPreferredSize(new Dimension(40,40));
+        moveBtn=new JButton(createIcon("icons/move.png") );
+        moveBtn.setPreferredSize(new Dimension(40,40));
         moveBtn.setBackground(Color.WHITE);
         moveBtn.addActionListener(this);
 
-        selectBtn=new JButton("Select");
-//        selectBtn.setPreferredSize(new Dimension(40,40));
+        selectBtn=new JButton( createIcon("icons/select.png"));
+        selectBtn.setPreferredSize(new Dimension(40,40));
         selectBtn.setBackground(Color.WHITE);
         selectBtn.addActionListener(this);
 
