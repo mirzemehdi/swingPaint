@@ -489,6 +489,7 @@ public class Main extends JFrame implements ActionListener {
     private void undo() {
         drawPanel.clearLastShape();
         redoBtn.setEnabled(true);
+        drawPanel.setSelectedShape(null);
         if (drawPanel.getCurrentShapes().empty()){
             undoBtn.setEnabled(false);
         }
@@ -497,6 +498,7 @@ public class Main extends JFrame implements ActionListener {
     private void redo() {
         drawPanel.addLastClearedShape();
         undoBtn.setEnabled(true);
+        drawPanel.setSelectedShape(null);
 
         if (drawPanel.getRemovedShapes().empty()){
             redoBtn.setEnabled(false);
