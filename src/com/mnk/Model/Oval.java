@@ -13,10 +13,12 @@ public class Oval extends Shape {
     }
 
     @Override
-    public void drawShape(Graphics graphics) {
-
-
-        graphics.drawOval(getStartX(),getStartY(),getWidth(),getHeight());
+    public void drawShape(Graphics graphics, boolean isFilled) {
+        if (isFilled){
+            graphics.fillOval(getStartX(),getStartY(),getWidth(),getHeight());
+        }
+        else
+            graphics.drawOval(getStartX(),getStartY(),getWidth(),getHeight());
     }
 
     @Override

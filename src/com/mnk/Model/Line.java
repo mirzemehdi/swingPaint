@@ -14,8 +14,9 @@ public class Line extends Shape {
     }
 
     @Override
-    public void drawShape(Graphics graphics) {
+    public void drawShape(Graphics graphics, boolean isFilled) {
         graphics.drawLine(getX1(), getY1(), getX2(), getY2());
+
     }
 
 

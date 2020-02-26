@@ -8,6 +8,7 @@ public abstract  class Shape implements Serializable  {
     private Color color;
     private int strokeWidth;
     private boolean isSelected;
+    private boolean isFilled;
 
     public Shape(int x1, int y1,int strokeWidth, Color color) {
         this.x1 = x1;
@@ -17,6 +18,7 @@ public abstract  class Shape implements Serializable  {
         isSelected=false;
         this.strokeWidth=strokeWidth;
         this.color = color;
+        isFilled=false;
     }
 
     public Shape(int x1, int x2, int y1, int y2, Color color) {
@@ -25,6 +27,14 @@ public abstract  class Shape implements Serializable  {
         this.y1 = y1;
         this.y2 = y2;
         this.color = color;
+    }
+
+    public boolean isFilled() {
+        return isFilled;
+    }
+
+    public void setFilled(boolean filled) {
+        isFilled = filled;
     }
 
     public boolean isSelected() {
@@ -96,10 +106,10 @@ public abstract  class Shape implements Serializable  {
         Graphics2D graphics2D=(Graphics2D)graphics;
         graphics2D.setColor(getColor());
         graphics2D.setStroke(new BasicStroke(getStrokeWidth()));
-        drawShape(graphics);
+        drawShape(graphics, isFilled);
     }
 
-    public abstract void drawShape(Graphics graphics);
+    public abstract void drawShape(Graphics graphics, boolean isFilled);
     public  boolean isEdge(int x,int y){
         if (    x==getStartX() && (y>getStartY() &&y<getEndY())
                 || x==getEndX() && (y>getStartY() &&y<getEndY())

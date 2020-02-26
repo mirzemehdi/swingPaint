@@ -10,8 +10,11 @@ public class RoundedRectangle extends Shape {
     }
 
     @Override
-    public void drawShape(Graphics graphics) {
-        graphics.drawRoundRect(getStartX(),getStartY(),getWidth(),getHeight(),20,20);
+    public void drawShape(Graphics graphics, boolean isFilled) {
+        if (isFilled)
+        graphics.fillRoundRect(getStartX(),getStartY(),getWidth(),getHeight(),20,20);
+        else
+            graphics.drawRoundRect(getStartX(),getStartY(),getWidth(),getHeight(),20,20);
 
     }
 

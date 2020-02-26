@@ -25,6 +25,9 @@ public class DrawPanel extends JPanel {
     private Stack<Shape>removedShapes;
     private boolean isSelected=false;
     private boolean isMoved=false;
+
+
+    private boolean isFilled=false;
     private AddedShapeListener shapeListener;
     private SelectFinishedListener selectFinishedListener;
     private Shape selectedShape=null;
@@ -124,9 +127,13 @@ public class DrawPanel extends JPanel {
         this.shapeType = shapeType;
     }
 
+    public boolean isFilled() {
+        return isFilled;
+    }
 
-
-
+    public void setFilled(boolean filled) {
+        isFilled = filled;
+    }
 
     public void clearLastShape(){
         if (!currentShapes.empty()){
@@ -159,6 +166,9 @@ public class DrawPanel extends JPanel {
                 super.mousePressed(e);
                 if (isSelected||isMoved){
                     selectShape(e);
+                }
+                else if(isFilled){
+                    fillSelectedShape(e);
                 }
                else if (shapeType!=null) {
                    shapeListener.onAdded();
@@ -233,6 +243,16 @@ public class DrawPanel extends JPanel {
 
 
         };
+    }
+
+    private void fillSelectedShape(MouseEvent e) {
+        for (Shape shape: currentShapes){
+            if (shape.contains(e.getX(),e.getY())){
+                shape.setColor(currentColor);
+                shape.setFilled(true);
+                repaint();
+            }
+        }
     }
 
     private void resizeShape(MouseEvent e) {
@@ -312,7 +332,6 @@ public class DrawPanel extends JPanel {
 
 
             }
-
         }
     }
 

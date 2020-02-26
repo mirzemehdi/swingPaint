@@ -23,7 +23,7 @@ import java.util.Stack;
 public class Main extends JFrame implements ActionListener {
 
     private JButton selectBtn,moveBtn, undoBtn,redoBtn,circleBtn,rectangleBtn,lineBtn,roundedRectangleBtn
-            ,clearAllBtn,colorChooserBtn,saveBtn,openBtn,exportBtn,newBtn,smallLineBtn,middleLineBtn,largeLineBtn;
+            ,clearAllBtn,colorChooserBtn,saveBtn,openBtn,exportBtn,newBtn,smallLineBtn,middleLineBtn,largeLineBtn, fillBtn;
     private JButton colorBtn1,colorBtn2,colorBtn3,colorBtn4,colorBtn5,colorBtn6;
     private List<JButton>shapeButtonsList=new ArrayList<>();
     private List<JButton>lineButtonsList=new ArrayList<>();
@@ -110,10 +110,19 @@ public class Main extends JFrame implements ActionListener {
         gridBagConstraints.gridy = 2;
         verticalPanel.add(sampleColorsPanel,gridBagConstraints);
 
+        JPanel colorPickFillPanel = new JPanel(new FlowLayout());
+        colorPickFillPanel.add(colorChooserBtn);
+        colorPickFillPanel.add(fillBtn);
+
         //Adding Color Picker
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        verticalPanel.add(colorChooserBtn,gridBagConstraints);
+        verticalPanel.add(colorPickFillPanel,gridBagConstraints);
+
+//        //Adding Color Fill Button
+//        gridBagConstraints.gridx = 1;
+//        gridBagConstraints.gridy = 3;
+//        verticalPanel.add(fillBtn,gridBagConstraints);
 
         shapesColorsPanel.add(verticalPanel);
         return shapesColorsPanel;
@@ -190,11 +199,13 @@ public class Main extends JFrame implements ActionListener {
         moveBtn=new JButton(createIcon("icons/move.png") );
         moveBtn.setPreferredSize(new Dimension(40,40));
         moveBtn.setBackground(Color.WHITE);
+        moveBtn.setOpaque(true);
         moveBtn.addActionListener(this);
 
         selectBtn=new JButton( createIcon("icons/select.png"));
         selectBtn.setPreferredSize(new Dimension(40,40));
         selectBtn.setBackground(Color.WHITE);
+        selectBtn.setOpaque(true);
         selectBtn.addActionListener(this);
 
         drawPanel.setSelectFinishedListener(new SelectFinishedListener() {
@@ -331,6 +342,11 @@ public class Main extends JFrame implements ActionListener {
         colorBtn6.setPreferredSize(new Dimension(25,25));
         colorBtn6.addActionListener(this);
 
+        fillBtn=new JButton();
+        fillBtn.setIcon(createIcon("icons/fill.png", 30,30));
+        fillBtn.setPreferredSize(new Dimension(35,35));
+        fillBtn.addActionListener(this);
+
         sampleColorsButtonList.add(colorBtn1);
         sampleColorsButtonList.add(colorBtn2);
         sampleColorsButtonList.add(colorBtn3);
@@ -377,8 +393,11 @@ public class Main extends JFrame implements ActionListener {
            shapeBtnClicked(rectangleBtn, ShapeType.RECTANGLE);
         else if (e.getSource()==roundedRectangleBtn)
             shapeBtnClicked(roundedRectangleBtn, ShapeType.ROUNDEDRECTANGLE);
-        else if (e.getSource()==clearAllBtn)
+        else if (e.getSource()==clearAllBtn) {
             drawPanel.clearAll();
+            drawPanel.setSelectedShape(null);
+            drawPanel.repaint();
+        }
         else if (e.getSource()==selectBtn) {
             drawPanel.setMoved(false);
 
@@ -393,6 +412,7 @@ public class Main extends JFrame implements ActionListener {
                 repaint();
                 selectBtn.setBackground(Color.WHITE);
             }
+
 
 
         }
@@ -442,6 +462,18 @@ public class Main extends JFrame implements ActionListener {
             Color selectedColor=JColorChooser.showDialog(null, "Choose a color", colorChooserBtn.getBackground());
             sampleColorButtonClicked(colorChooserBtn,selectedColor);
         }
+        else if (e.getSource()==fillBtn){
+            if (drawPanel.isFilled()){
+                drawPanel.setFilled(false);
+                fillBtn.setBorder(null);
+            }
+            else{
+                drawPanel.setFilled(true);
+                drawPanel.repaint();
+                fillBtn.setBorder(new LineBorder(Color.RED, 3));
+            }
+        }
+
 
 
         //Line Stroke Buttons

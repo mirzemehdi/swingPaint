@@ -12,8 +12,12 @@ public class Rectangle extends Shape {
     }
 
     @Override
-    public void drawShape(Graphics graphics) {
-        graphics.drawRect(getStartX(),getStartY(),getWidth(),getHeight());
+    public void drawShape(Graphics graphics, boolean isFilled) {
+        if (isFilled)
+        graphics.fillRect(getStartX(),getStartY(),getWidth(),getHeight());
+        else
+            graphics.drawRect(getStartX(),getStartY(),getWidth(),getHeight());
+
     }
 
     @Override
